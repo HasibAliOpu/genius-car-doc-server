@@ -43,16 +43,32 @@ async function run() {
     //POST
     app.post("/service", async (req, res) => {
       const newService = req.body;
+      if (
+        !newService.name ||
+        !newService.description ||
+        !newService.price ||
+        !newService.img
+      ) {
+        return res.send({
+          success: false,
+          error: "Please Provide all information",
+        });
+      }
       const result = await serviceCollection.insertOne(newService);
-      res.send(result);
+      res.send({
+        success: true,
+        message: `Successfully added ${newService.name}service`,
+      });
     });
 
     //DELETE
     app.delete("/service/:id", async (req, res) => {
       const id = req.params.id;
-      const query = { _id: ObjectId(id) };
-      const result = await serviceCollection.deleteOne(query);
-      res.send(result);
+      const result = await serviceCollection.deleteOne({ _id: ObjectId(id) });
+      if (!result.deletedCount) {
+        return res.send({ success: false, error: "Something Went Wrong" });
+      }
+      res.send({ success: true, message: "Successfully Deleted the Service" });
     });
   } finally {
     // await client.close()
