@@ -35,7 +35,6 @@ async function run() {
 
     app.get("/service/:id", async (req, res) => {
       const id = req.params.id;
-
       const service = await serviceCollection.findOne({ _id: ObjectId(id) });
       res.send(service);
     });
@@ -72,6 +71,11 @@ async function run() {
     });
 
     // Order Collection API
+    app.get("/order", async (req, res) => {
+      const cursor = orderCollection.find();
+      const orders = await cursor.toArray();
+      res.send(orders);
+    });
     app.post("/order", async (req, res) => {
       const order = req.body;
 
