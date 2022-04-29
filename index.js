@@ -21,7 +21,7 @@ async function run() {
   try {
     await client.connect();
     const serviceCollection = client.db("geniusCar").collection("service");
-
+    const orderCollection = client.db("geniusCar").collection("order");
     // GET all service
 
     app.get("/service", async (req, res) => {
@@ -57,7 +57,7 @@ async function run() {
       const result = await serviceCollection.insertOne(newService);
       res.send({
         success: true,
-        message: `Successfully added ${newService.name}service`,
+        message: `Successfully added ${newService.name}`,
       });
     });
 
@@ -69,6 +69,17 @@ async function run() {
         return res.send({ success: false, error: "Something Went Wrong" });
       }
       res.send({ success: true, message: "Successfully Deleted the Service" });
+    });
+
+    // Order Collection API
+    app.post("/order", async (req, res) => {
+      const order = req.body;
+
+      await orderCollection.insertOne(order);
+      res.send({
+        success: true,
+        message: `Successfully Inserted ${order.service}`,
+      });
     });
   } finally {
     // await client.close()
